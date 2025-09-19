@@ -1,0 +1,93 @@
+.
+├── eslint.config.mjs
+├── next-env.d.ts
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── public
+│   ├── assets
+│   │   └── zap
+│   │       └── README.md
+│   ├── bluesky Background Removed.png
+│   ├── discord logo.jpg
+│   ├── facebook logo.png
+│   ├── features
+│   │   ├── best-times.png
+│   │   ├── calendar-grid.png
+│   │   ├── copilot-input.png
+│   │   ├── model-toggle.png
+│   │   ├── reels-stack.png
+│   │   └── social-sizes.png
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── image 1.png
+│   ├── image 2.png
+│   ├── image 3.png
+│   ├── image 4.jpg
+│   ├── image 5.jpg
+│   ├── image 6.jpg
+│   ├── image 7.png
+│   ├── image_7-removebg-preview.png
+│   ├── insta logi Background Removed.png
+│   ├── LinkedIn.png
+│   ├── next.svg
+│   ├── pexels-pixabay-267350.jpg
+│   ├── pinterest Background Removed.png
+│   ├── quora logo Background Removed.png
+│   ├── reddit logi.png
+│   ├── snapchat.jpg
+│   ├── telegram logo Background Removed.png
+│   ├── therads logo Background Removed.png
+│   ├── tiktok logo Background Removed.png
+│   ├── twitch logo.png
+│   ├── vercel.svg
+│   ├── window.svg
+│   ├── X_logo.jpg
+│   ├── youtubelogo.png
+│   └── zap logo Background Removed.png
+├── README.md
+├── src
+│   ├── app
+│   │   ├── blog
+│   │   │   └── page.tsx
+│   │   ├── coming-soon
+│   │   │   └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── gallery
+│   │   │   ├── CorridorHero.tsx
+│   │   │   └── page.tsx
+│   │   ├── globals.css
+│   │   ├── icon.png
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   ├── pricing
+│   │   │   └── page.tsx
+│   │   ├── privacy
+│   │   │   └── page.tsx
+│   │   └── terms
+│   │       └── page.tsx
+│   └── components
+│       ├── CleanUseCases.tsx
+│       ├── ExploreStrip.tsx
+│       ├── ExploreStripMarquee.tsx
+│       ├── FaqAccordion.tsx
+│       ├── FeatureMosaicTight.tsx
+│       ├── FeatureShowcase.tsx
+│       ├── FooterCta.tsx
+│       ├── FooterMega.tsx
+│       ├── Header.tsx
+│       ├── HeroCta.tsx
+│       ├── ImpactTrio.tsx
+│       ├── LegalLayout.tsx
+│       ├── Platforms.tsx
+│       ├── ShowcaseStrip.tsx
+│       ├── SparkBG.tsx
+│       ├── TeamsShowcase.tsx
+│       ├── Testimonials.tsx
+│       └── WhatZapCanDo.tsx
+├── structire.txt
+└── tsconfig.json
+
+14 directories, 77 files

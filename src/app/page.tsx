@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Header from "@/components/Header";
 import { ShowcaseStrip, ShowcaseItem } from "@/components/ShowcaseStrip";
 import Platforms from "@/components/Platforms";
@@ -9,6 +10,7 @@ import ImpactTrio from "@/components/ImpactTrio";
 import Testimonials from "@/components/Testimonials";
 import FeatureShowcase from "@/components/FeatureShowcase";
 import FooterMega from "@/components/FooterMega";
+import { useMagicLink } from "@/hooks/useMagicLink";
 
 const ITEMS: ShowcaseItem[] = [
   { id:"img-hero", kind:"image", kicker:"By prompt", title:"Studio hero visual",
@@ -29,6 +31,18 @@ const ITEMS: ShowcaseItem[] = [
 ];
 
 export default function Page() {
+  // Magic link hook
+  const { status, error, lastEmail, send } = useMagicLink({ redirectTo: "/onboarding" });
+  const [email, setEmail] = useState("");
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await send(email);
+  };
+
+  const isSubmitting = status === "submitting";
+  const isSent = status === "sent";
+
   return (
     <>
       {/* UNIFIED PAGE BACKGROUND */}
@@ -48,76 +62,102 @@ export default function Page() {
             ].join(", "),
           }}
         />
-        
+
         <Header />
+
         {/* HERO */}
         <section className="relative overflow-hidden">
           <div className="relative mx-auto max-w-7xl px-6 pt-24 pb-14">
-          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] drop-shadow"
-              style={{fontFamily:"var(--font-display)"}}>
-            Grow your audience with <span className="text-[#AC7BFF]">Zap</span>
-        </h1>
-        <p className="mt-4 max-w-2xl text-white/80 text-lg">
-            Type once. Zap turns it into posts, images and videos then schedules across 14+ channels. Fast, on brand, tuned for reach.
-          </p>
+            <h1
+              className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] drop-shadow"
+              style={{ fontFamily: "var(--font-display)" }}
+            >
+              Grow your audience with <span className="text-[#AC7BFF]">Zap</span>
+            </h1>
+            <p className="mt-4 max-w-2xl text-white/80 text-lg">
+              Type once. Zap turns it into posts, images and videos then schedules across 14+ channels. Fast, on brand, tuned for reach.
+            </p>
 
-          {/* email capture - left aligned and larger */}
-          <div className="mt-7 w-full max-w-[600px]">
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <input
-                type="email"
-                placeholder="Enter your email..."
-                className="h-16 w-full rounded-2xl border border-white/15 bg-white/10 px-6 text-lg text-white/90
-                           outline-none backdrop-blur placeholder:text-white/50
-                           focus:border-white/20"
-              />
-              <a
-                href="https://zap.sonetz.com/"
-                className="h-16 shrink-0 rounded-2xl bg-[#7A4DFF] px-6 text-base font-medium text-white 
-                           shadow-[0_12px_40px_rgba(122,77,255,.4)] transition-all duration-200 
-                           hover:translate-y-[-2px] hover:shadow-[0_16px_50px_rgba(122,77,255,.5)] 
-                           whitespace-nowrap min-w-[160px] flex items-center justify-center"
-              >
-                Start free
-              </a>
+            {/* Magic link capture */}
+            <form onSubmit={onSubmit} className="mt-7 w-full max-w-[600px]" noValidate>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  required
+                  placeholder="Enter your email..."
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-16 w-full rounded-2xl border border-white/15 bg-white/10 px-6 text-lg text-white/90
+                             outline-none backdrop-blur placeholder:text-white/50 focus:border-white/20"
+                  aria-label="Email"
+                />
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="h-16 shrink-0 rounded-2xl bg-[#7A4DFF] px-6 text-base font-medium text-white 
+                             shadow-[0_12px_40px_rgba(122,77,255,.4)] transition-all duration-200 
+                             hover:translate-y-[-2px] hover:shadow-[0_16px_50px_rgba(122,77,255,.5)] 
+                             whitespace-nowrap min-w-[160px] flex items-center justify-center disabled:opacity-60"
+                >
+                  {isSubmitting ? "Sending…" : "Start free"}
+                </button>
+              </div>
+
+              {/* States */}
+              <div className="mt-3 min-h-[22px]">
+                {isSent && (
+                  <p className="text-sm text-emerald-300/90" role="status" aria-live="polite">
+                    Check <strong className="text-white/90">{lastEmail}</strong>. Link expires in ~15 minutes.
+                  </p>
+                )}
+                {error && (
+                  <p className="text-sm text-red-300/95" role="alert" aria-live="assertive">
+                    {error}
+                  </p>
+                )}
+              </div>
+            </form>
+          </div>
+        </section>
+
+        {/* CREATE STRIP */}
+        <section id="create" className="relative py-12">
+          <div className="mx-auto max-w-7xl px-6">
+            <h2 className="text-3xl font-semibold" style={{ fontFamily: "var(--font-display)" }}>
+              What Zap can create
+            </h2>
+            <p className="mt-2 text-white/70">Hover to view the exact prompt. Tap on mobile.</p>
+            <div className="mt-8">
+              <ShowcaseStrip items={ITEMS} />
             </div>
           </div>
-      </div>
-    </section>
+        </section>
 
-      {/* CREATE STRIP */}
-      <section id="create" className="relative py-12">
-        <div className="mx-auto max-w-7xl px-6">
-          <h2 className="text-3xl font-semibold" style={{fontFamily:"var(--font-display)"}}>What Zap can create</h2>
-          <p className="mt-2 text-white/70">Hover to view the exact prompt. Tap on mobile.</p>
-          <div className="mt-8"><ShowcaseStrip items={ITEMS} /></div>
-        </div>
-    </section>
+        {/* PLATFORMS */}
+        <Platforms />
 
+        {/* FEATURE SHOWCASE - WITH ONE PROMPT ZAP CAN */}
+        <FeatureShowcase />
 
-      {/* PLATFORMS */}
-      <Platforms />
+        {/* IMPACT TRIO */}
+        <ImpactTrio />
 
-      {/* FEATURE SHOWCASE - WITH ONE PROMPT ZAP CAN */}
-      <FeatureShowcase />
+        {/* TESTIMONIALS */}
+        <Testimonials />
 
+        {/* FAQ ACCORDION */}
+        <FaqAccordion />
 
-      {/* IMPACT TRIO */}
-      <ImpactTrio />
-
-      {/* TESTIMONIALS */}
-      <Testimonials />
-
-      {/* FAQ ACCORDION */}
-      <FaqAccordion />
-
-      {/* FOOTER CTA */}
-      <div className="px-6">
+        {/* FOOTER CTA */}
+        <div className="px-6">
           <FooterCta />
         </div>
-        </div>
-        
-        <FooterMega />
-      </>
-    );
-  }
+      </div>
+
+      <FooterMega />
+    </>
+  );
+}
