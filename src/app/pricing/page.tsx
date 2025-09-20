@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/Header";
 import FooterMega from "@/components/FooterMega";
 import { useMagicLink } from "@/hooks/useMagicLink";
+import { useSearchParams } from "next/navigation";
 
 /** ---- Types & constants ---- */
 type Cycle = "monthly" | "annually";
@@ -130,7 +131,8 @@ function MagicSignupModal({
   interval: "month" | "year";
   onClose: () => void;
 }) {
-  const redirectTo = `/billing/checkout?plan=${plan}&interval=${interval}`;
+  // IMPORTANT: point the redirect to the APP pricing page so it can auto-launch Stripe
+  const redirectTo = `/app/pricing?plan=${plan}&interval=${interval}`;
   const { status, error, lastEmail, send, reset } = useMagicLink({ redirectTo, cooldownMs: 12000 });
 
   const [email, setEmail] = useState("");
@@ -144,7 +146,6 @@ function MagicSignupModal({
   }, []); // eslint-disable-line
 
   useEffect(() => {
-    // Only try session prefill if we don't have an email yet
     if (email) return;
     let cancelled = false;
     (async () => {
@@ -162,13 +163,9 @@ function MagicSignupModal({
             localStorage.setItem("zap:lastEmail", sessionEmail);
           } catch {}
         }
-      } catch {
-        // ignore
-      }
+      } catch {/* ignore */}
     })();
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [email]);
 
   // Persist successful address to localStorage
@@ -268,9 +265,40 @@ function MagicSignupModal({
 
 /** ---- Page ---- */
 export default function PricingPage() {
+  const searchParams = useSearchParams();
+
   const [cycle, setCycle] = useState<Cycle>("annually");
   const [modalPlan, setModalPlan] = useState<null | "starter" | "growth" | "pro">(null);
+
+  // interval follows the toggle; modal uses it for monthly/annual
   const interval: "month" | "year" = cycle === "annually" ? "year" : "month";
+
+  // Deep-link support: ?plan=growth&interval=year OR ?plan=growth.year
+  useEffect(() => {
+    if (!searchParams) return;
+
+    const rawPlan = searchParams.get("plan") || "";
+    const rawInterval = searchParams.get("interval") || "";
+
+    let plan: "starter" | "growth" | "pro" | null = null;
+    let intv: "month" | "year" | null = null;
+
+    if (rawPlan && rawPlan.includes(".") && !rawInterval) {
+      const [p, i] = rawPlan.split(".", 2);
+      if (["starter", "growth", "pro"].includes(p)) plan = p as any;
+      if (["month", "year"].includes(i)) intv = i as any;
+    } else {
+      if (["starter", "growth", "pro"].includes(rawPlan)) plan = rawPlan as any;
+      if (["month", "year"].includes(rawInterval)) intv = rawInterval as any;
+    }
+
+    if (intv) {
+      setCycle(intv === "year" ? "annually" : "monthly");
+    }
+    if (plan) {
+      setModalPlan(plan);
+    }
+  }, [searchParams]);
 
   return (
     <>
@@ -351,6 +379,7 @@ export default function PricingPage() {
                   cycle={cycle}
                   onSelectPaidPlan={(planId) => {
                     if (planId === "free") return;
+                    // Modal opens for monthly AND annual — interval comes from `cycle`
                     setModalPlan(planId as "starter" | "growth" | "pro");
                   }}
                 />
