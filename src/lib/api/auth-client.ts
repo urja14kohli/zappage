@@ -1,8 +1,10 @@
 // src/lib/api/auth-client.ts
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_ZAP_BACKEND_URL ||
-  (typeof window !== "undefined" && (window as any).__ZAP_BACKEND__) ||
-  "http://localhost:8020";
+
+  (typeof window !== "undefined" && (window as { __ZAP_BACKEND__?: string }).__ZAP_BACKEND__) ||
+  "https://zap-api.sonetz.com";
+
 
 let authToken: string | null = null;
 
