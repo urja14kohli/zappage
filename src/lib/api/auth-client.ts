@@ -5,7 +5,6 @@ const API_BASE_URL =
   (typeof window !== "undefined" && (window as { __ZAP_BACKEND__?: string }).__ZAP_BACKEND__) ||
   "https://zap-api.sonetz.com";
 
-
 let authToken: string | null = null;
 
 export const setGlobalAuthToken = (token: string | null) => {
@@ -49,7 +48,7 @@ async function handleJson<T>(res: Response): Promise<T> {
 
   if (res.status === 204) return {} as T;
 
-  let data: any = null;
+  let data: unknown = null;
   try {
     data = await res.json();
   } catch {
@@ -62,14 +61,24 @@ async function handleJson<T>(res: Response): Promise<T> {
   }
 
   if (!res.ok) {
-    const msg =
-      typeof data === "string"
-        ? data
-        : data?.detail
-        ? typeof data.detail === "string"
-          ? data.detail
-          : JSON.stringify(data.detail)
-        : data?.message || "API Error";
+    let msg: string;
+    
+    if (typeof data === "string") {
+      msg = data;
+    } else if (data && typeof data === "object" && "detail" in data) {
+      const errorData = data as { detail: unknown };
+      if (typeof errorData.detail === "string") {
+        msg = errorData.detail;
+      } else {
+        msg = JSON.stringify(errorData.detail);
+      }
+    } else if (data && typeof data === "object" && "message" in data) {
+      const errorData = data as { message: unknown };
+      msg = typeof errorData.message === "string" ? errorData.message : "API Error";
+    } else {
+      msg = "API Error";
+    }
+    
     const err = new Error(msg) as Error & { status?: number };
     err.status = res.status;
     throw err;
@@ -122,11 +131,11 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
 export const api = {
   get:  <T>(endpoint: string) => request<T>(endpoint, { method: "GET" }),
-  post: <T>(endpoint: string, data?: any) =>
+  post: <T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "POST", body: data ? JSON.stringify(data) : undefined }),
-  put:  <T>(endpoint: string, data?: any) =>
+  put:  <T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "PUT",  body: data ? JSON.stringify(data) : undefined }),
-  delete:<T>(endpoint: string, data?: any) =>
+  delete:<T>(endpoint: string, data?: unknown) =>
     request<T>(endpoint, { method: "DELETE", body: data ? JSON.stringify(data) : undefined }),
 
   getBlob: async (endpoint: string): Promise<{ blob: Blob; filename?: string }> => {

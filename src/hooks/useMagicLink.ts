@@ -41,9 +41,9 @@ export function useMagicLink(opts?: { redirectTo?: string | null; cooldownMs?: n
             timerRef.current = null;
           }, cooldownMs) as unknown as number;
         }
-      } catch (e: any) {
+      } catch (e: unknown) {
         setStatus("error");
-        setError(e?.message || "Could not send link. Try again.");
+        setError((e as Error)?.message || "Could not send link. Try again.");
       }
     },
     [redirectTo, cooldownMs, canSubmit]

@@ -1,7 +1,7 @@
 // app/pricing/page.tsx
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import Header from "@/components/Header";
 import FooterMega from "@/components/FooterMega";
 import { useMagicLink } from "@/hooks/useMagicLink";
@@ -263,15 +263,15 @@ function MagicSignupModal({
   );
 }
 
-/** ---- Page ---- */
-export default function PricingPage() {
+/** ---- Content Component with Search Params ---- */
+function PricingContent() {
   const searchParams = useSearchParams();
 
   const [cycle, setCycle] = useState<Cycle>("annually");
   const [modalPlan, setModalPlan] = useState<null | "starter" | "growth" | "pro">(null);
 
   // interval follows the toggle; modal uses it for monthly/annual
-  const interval: "month" | "year" = cycle === "annually" ? "year" : "month";
+  // const interval: "month" | "year" = cycle === "annually" ? "year" : "month";
 
   // Deep-link support: ?plan=growth&interval=year OR ?plan=growth.year
   useEffect(() => {
@@ -285,11 +285,11 @@ export default function PricingPage() {
 
     if (rawPlan && rawPlan.includes(".") && !rawInterval) {
       const [p, i] = rawPlan.split(".", 2);
-      if (["starter", "growth", "pro"].includes(p)) plan = p as any;
-      if (["month", "year"].includes(i)) intv = i as any;
+      if (["starter", "growth", "pro"].includes(p)) plan = p as "starter" | "growth" | "pro";
+      if (["month", "year"].includes(i)) intv = i as "month" | "year";
     } else {
-      if (["starter", "growth", "pro"].includes(rawPlan)) plan = rawPlan as any;
-      if (["month", "year"].includes(rawInterval)) intv = rawInterval as any;
+      if (["starter", "growth", "pro"].includes(rawPlan)) plan = rawPlan as "starter" | "growth" | "pro";
+      if (["month", "year"].includes(rawInterval)) intv = rawInterval as "month" | "year";
     }
 
     if (intv) {
@@ -463,6 +463,15 @@ export default function PricingPage() {
         />
       )}
     </>
+  );
+}
+
+/** ---- Page ---- */
+export default function PricingPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PricingContent />
+    </Suspense>
   );
 }
 

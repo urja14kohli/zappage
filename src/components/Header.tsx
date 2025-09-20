@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,7 +40,7 @@ export default function Header() {
         {/* Logo with enhanced styling - clickable */}
         <Link href="/" className="flex items-center gap-3 transition-all duration-200 hover:scale-105">
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white shadow-lg">
-            <img src="/zap logo Background Removed.png" alt="Zap" className="h-6 w-6 object-contain" />
+            <Image src="/zap logo Background Removed.png" alt="Zap" width={24} height={24} className="object-contain" />
           </div>
           <span className="text-xl font-bold bg-gradient-to-r from-white to-white/90 bg-clip-text text-transparent" style={{fontFamily:"var(--font-display)"}}>Zap</span>
         </Link>

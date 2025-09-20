@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Platforms() {
   // Using existing logos from /public/ directory
   const platforms = [
@@ -38,7 +40,7 @@ export default function Platforms() {
             {[...firstRow, ...firstRow].map((p, i) => (
               <div key={p.name + i} className="flex items-center gap-3 shrink-0">
                 <span className="grid h-12 w-12 md:h-14 md:w-14 place-items-center rounded-full bg-white/10 backdrop-blur overflow-hidden border border-white/5">
-                  <img src={`/${p.file}`} alt={p.name} className="h-6 w-6 md:h-7 md:w-7 object-contain" />
+                  <Image src={`/${p.file}`} alt={p.name} width={28} height={28} className="object-contain" />
                 </span>
                 <div className="text-white/80 text-sm md:text-base font-medium whitespace-nowrap">{p.name}</div>
               </div>
@@ -54,7 +56,7 @@ export default function Platforms() {
             {[...secondRow, ...secondRow].map((p, i) => (
               <div key={p.name + i} className="flex items-center gap-3 shrink-0">
                 <span className="grid h-12 w-12 md:h-14 md:w-14 place-items-center rounded-full bg-white/10 backdrop-blur overflow-hidden border border-white/5">
-                  <img src={`/${p.file}`} alt={p.name} className="h-6 w-6 md:h-7 md:w-7 object-contain" />
+                  <Image src={`/${p.file}`} alt={p.name} width={28} height={28} className="object-contain" />
                 </span>
                 <div className="text-white/80 text-sm md:text-base font-medium whitespace-nowrap">{p.name}</div>
               </div>
